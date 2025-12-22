@@ -1,3 +1,8 @@
+try:
+    import error_handling  # installs global excepthook and helpers
+except Exception:
+    pass
+
 import pytest
 from src.api_client import UserAPIClient
 

@@ -1,3 +1,8 @@
+try:
+    import error_handling  # installs global excepthook and helpers
+except Exception:
+    pass
+
 from flask import Flask, render_template
 from data_sources import DataSourceA, DataSourceB
 

@@ -1,3 +1,8 @@
+try:
+    import error_handling  # installs global excepthook and helpers
+except Exception:
+    pass
+
 import unittest
 from hello_world import hello_world
 

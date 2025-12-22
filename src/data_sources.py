@@ -1,3 +1,8 @@
+try:
+    import error_handling  # installs global excepthook and helpers
+except Exception:
+    pass
+
 class DataSource:
     def read_signal(self):
         raise NotImplementedError("This method should be overridden by subclasses")
