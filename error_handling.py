@@ -5,7 +5,6 @@ Global error handling helpers.
 """
 import sys
 import logging
-import traceback
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger('error_handling')
@@ -43,5 +42,3 @@ def handle_exceptions(func):
     wrapper.__name__ = getattr(func, '__name__', 'wrapper')
     wrapper.__doc__ = getattr(func, '__doc__', None)
     return wrapper
-
-PY;cd /Users/faris/Desktop/demo && echo "Created error_handling.py"
