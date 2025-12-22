@@ -5,6 +5,20 @@ from error_handling import handle_exceptions
 
 logger = logging.getLogger(__name__)
 
+# Public exception types used by callers
+class APIError(Exception):
+    """Generic API error."""
+    pass
+
+class AuthenticationError(APIError):
+    """Raised when authentication fails."""
+    pass
+
+class RateLimitError(APIError):
+    """Raised when the API rate limit is exceeded."""
+    pass
+
+
 class UserAPIClient:
     def __init__(self, base_url: str, api_key: str, timeout: int = 30):
         self.base_url = base_url
