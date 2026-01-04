@@ -1,0 +1,16 @@
+groups:
+- name: incident_review_alerts
+  interval: 30s
+  rules:
+  - alert: DatabaseHighCPU
+    expr: avg(rate(process_cpu_seconds_total{service="database"}[5m])) * 100 > 85
+    for: 5m
+    labels:
+      severity: warning
+      team: database-team
+      component: database
+      service: database
+    annotations:
+      summary: database CPU usage is high
+      description: 'CPU usage for database is {{ $value }}% (threshold: 85%) over the last 5m.'
+      runbook_url: https://runbooks.example.com/alerts/database-high-cpu
