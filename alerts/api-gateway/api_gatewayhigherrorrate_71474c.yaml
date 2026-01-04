@@ -1,0 +1,17 @@
+groups:
+- name: incident_review_alerts
+  interval: 30s
+  rules:
+  - alert: Api_GatewayHighErrorRate
+    expr: (sum(rate(http_requests_total{service="api-gateway",status=~"5.."}[5m])) / sum(rate(http_requests_total{service="api-gateway"}[5m])))
+      * 100 > 75.0
+    for: 5m
+    labels:
+      severity: critical
+      team: platform-team
+      component: api
+      service: api-gateway
+    annotations:
+      summary: api-gateway has high error rate
+      description: 'Error rate for api-gateway is {{ $value }}% (threshold: 75.0%) over the last 5m.'
+      runbook_url: https://runbooks.example.com/alerts/api-gateway-high-error-rate

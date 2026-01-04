@@ -1,0 +1,17 @@
+groups:
+- name: incident_review_alerts
+  interval: 30s
+  rules:
+  - alert: Authentication_ServiceHighErrorRate
+    expr: (sum(rate(http_requests_total{service="authentication-service",status=~"5.."}[5m])) / sum(rate(http_requests_total{service="authentication-service"}[5m])))
+      * 100 > 500.0
+    for: 5m
+    labels:
+      severity: critical
+      team: database-team
+      component: database
+      service: authentication-service
+    annotations:
+      summary: authentication-service has high error rate
+      description: 'Error rate for authentication-service is {{ $value }}% (threshold: 500.0%) over the last 5m.'
+      runbook_url: https://runbooks.example.com/alerts/authentication-service-high-error-rate

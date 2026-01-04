@@ -1,0 +1,16 @@
+groups:
+- name: incident_review_alerts
+  interval: 30s
+  rules:
+  - alert: Authentication_ServiceHighCPU
+    expr: avg(rate(process_cpu_seconds_total{service="authentication-service"}[5m])) * 100 > 85
+    for: 5m
+    labels:
+      severity: warning
+      team: database-team
+      component: database
+      service: authentication-service
+    annotations:
+      summary: authentication-service CPU usage is high
+      description: 'CPU usage for authentication-service is {{ $value }}% (threshold: 85%) over the last 5m.'
+      runbook_url: https://runbooks.example.com/alerts/authentication-service-high-cpu
