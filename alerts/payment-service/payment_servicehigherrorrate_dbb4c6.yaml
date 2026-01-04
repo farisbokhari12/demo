@@ -1,0 +1,17 @@
+groups:
+- name: incident_review_alerts
+  interval: 30s
+  rules:
+  - alert: Payment_ServiceHighErrorRate
+    expr: (sum(rate(http_requests_total{service="payment-service",status=~"5.."}[5m])) / sum(rate(http_requests_total{service="payment-service"}[5m])))
+      * 100 > 10.0
+    for: 5m
+    labels:
+      severity: critical
+      team: payments-team
+      component: api
+      service: payment-service
+    annotations:
+      summary: payment-service has high error rate
+      description: 'Error rate for payment-service is {{ $value }}% (threshold: 10.0%) over the last 5m.'
+      runbook_url: https://runbooks.example.com/alerts/payment-service-high-error-rate

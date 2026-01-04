@@ -1,0 +1,17 @@
+groups:
+- name: incident_review_alerts
+  interval: 30s
+  rules:
+  - alert: Authentication_ServiceHighLatency
+    expr: histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket{service="authentication-service"}[5m])) by
+      (le)) * 1000 > 500
+    for: 5m
+    labels:
+      severity: warning
+      team: database-team
+      component: database
+      service: authentication-service
+    annotations:
+      summary: authentication-service p95 latency is high
+      description: 'p95 latency for authentication-service is {{ $value }}ms (threshold: 500ms) over the last 5m.'
+      runbook_url: https://runbooks.example.com/alerts/authentication-service-high-latency
