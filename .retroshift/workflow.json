@@ -1,7 +1,228 @@
 {
-  "id": "new",
-  "name": "Untitled Workflow",
-  "nodes": [],
-  "edges": [],
-  "meta": {}
+  "id": "alert-pr-generator",
+  "name": "Alert PR Generator",
+  "nodes": [
+    {
+      "id": "input-review-file",
+      "position": {
+        "x": 50,
+        "y": 200
+      },
+      "type": "io.input",
+      "data": {
+        "type": "io.input",
+        "label": "Incident Review File",
+        "key": "incident_review_file",
+        "required": true
+      },
+      "measured": {
+        "width": 150,
+        "height": 100
+      }
+    },
+    {
+      "id": "input-team",
+      "position": {
+        "x": 50,
+        "y": 300
+      },
+      "type": "io.input",
+      "data": {
+        "type": "io.input",
+        "label": "Team Name",
+        "key": "team_name",
+        "required": false
+      },
+      "measured": {
+        "width": 150,
+        "height": 100
+      }
+    },
+    {
+      "id": "parse-review",
+      "position": {
+        "x": 300,
+        "y": 250
+      },
+      "type": "tool.invoke",
+      "data": {
+        "type": "tool.invoke",
+        "label": "Parse Incident Review",
+        "tool_name": "alert.parse_incident_review",
+        "args": {
+          "file_path": "{{ incident_review_file }}",
+          "team": "{{ team_name }}"
+        },
+        "output_key": "parsed_review"
+      },
+      "measured": {
+        "width": 220,
+        "height": 104
+      }
+    },
+    {
+      "id": "generate-alerts",
+      "position": {
+        "x": 600,
+        "y": 250
+      },
+      "type": "tool.invoke",
+      "data": {
+        "type": "tool.invoke",
+        "label": "Generate Alert Definitions",
+        "tool_name": "alert.generate",
+        "args": {
+          "actions": "{{ parsed_review.actions }}",
+          "use_templates": true,
+          "group_by_service": true,
+          "output_dir": "alerts"
+        },
+        "output_key": "generated_alerts"
+      },
+      "measured": {
+        "width": 220,
+        "height": 104
+      }
+    },
+    {
+      "id": "write-alert-files",
+      "position": {
+        "x": 900,
+        "y": 200
+      },
+      "type": "tool.invoke",
+      "data": {
+        "type": "tool.invoke",
+        "label": "Write Alert Files",
+        "tool_name": "alert.write_files",
+        "args": {
+          "generated_alerts": "{{ generated_alerts }}",
+          "base_dir": "alerts"
+        },
+        "output_key": "written_files"
+      },
+      "measured": {
+        "width": 220,
+        "height": 104
+      }
+    },
+    {
+      "id": "create-pr-summary",
+      "position": {
+        "x": 900,
+        "y": 350
+      },
+      "type": "tool.invoke",
+      "data": {
+        "type": "tool.invoke",
+        "label": "Create PR Summary",
+        "tool_name": "alert.create_pr_summary",
+        "args": {
+          "generated_alerts": "{{ generated_alerts }}",
+          "incident_review_summary": "{{ parsed_review.summary }}"
+        },
+        "output_key": "pr_summary"
+      },
+      "measured": {
+        "width": 220,
+        "height": 104
+      }
+    },
+    {
+      "id": "create-pr",
+      "position": {
+        "x": 1200,
+        "y": 250
+      },
+      "type": "tool.invoke",
+      "data": {
+        "type": "tool.invoke",
+        "label": "Create Pull Request",
+        "tool_name": "alert.create_github_pr",
+        "args": {
+          "pr_title": "{{ pr_summary.pr_title }}",
+          "pr_body": "{{ pr_summary.pr_body }}",
+          "branch_name": "alerts/incident-review-updates",
+          "base_branch": "main",
+          "files": "{{ written_files.written_files }}"
+        },
+        "output_key": "pr_result"
+      },
+      "measured": {
+        "width": 220,
+        "height": 104
+      }
+    },
+    {
+      "id": "output-results",
+      "position": {
+        "x": 1500,
+        "y": 250
+      },
+      "type": "io.output",
+      "data": {
+        "type": "io.output",
+        "label": "PR URL",
+        "key": "pr_url",
+        "from": "pr_result.pr_url"
+      },
+      "measured": {
+        "width": 150,
+        "height": 100
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "source": "input-review-file",
+      "target": "parse-review",
+      "animated": true
+    },
+    {
+      "id": "e2",
+      "source": "input-team",
+      "target": "parse-review",
+      "animated": true
+    },
+    {
+      "id": "e3",
+      "source": "parse-review",
+      "target": "generate-alerts",
+      "animated": true
+    },
+    {
+      "id": "e4",
+      "source": "generate-alerts",
+      "target": "write-alert-files",
+      "animated": true
+    },
+    {
+      "id": "e5",
+      "source": "generate-alerts",
+      "target": "create-pr-summary",
+      "animated": true
+    },
+    {
+      "id": "e6",
+      "source": "write-alert-files",
+      "target": "create-pr",
+      "animated": true
+    },
+    {
+      "id": "e7",
+      "source": "create-pr-summary",
+      "target": "create-pr",
+      "animated": true
+    },
+    {
+      "id": "e8",
+      "source": "create-pr",
+      "target": "output-results",
+      "animated": true
+    }
+  ],
+  "meta": {
+    "templateId": "alert-pr-generator"
+  }
 }
