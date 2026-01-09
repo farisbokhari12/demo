@@ -1,0 +1,10 @@
+alert: ApiGatewayCriticalConnectionPoolUtilization
+expr: gateway_connection_pool_utilization_percent > 95
+for: 2m
+labels:
+  severity: critical
+  team: retro
+  component: api
+annotations:
+  summary: API Gateway Critical Connection Pool Utilization
+  description: API Gateway connection pool nearly exhausted, immediate action required
