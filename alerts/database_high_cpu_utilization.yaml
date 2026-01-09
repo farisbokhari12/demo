@@ -1,0 +1,10 @@
+alert: DatabaseHighCpuUtilization
+expr: database_cpu_utilization_percent > 85
+for: 5m
+labels:
+  severity: critical
+  team: retro
+  component: database
+annotations:
+  summary: High CPU utilization for Database
+  description: Database CPU utilization critically high, may impact all services
