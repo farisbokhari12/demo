@@ -8,7 +8,7 @@ groups:
     for: 5m
     labels:
       severity: critical
-      team: test
+      team: retro
       component: service
       service: critical
     annotations:
