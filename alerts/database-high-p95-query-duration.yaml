@@ -7,5 +7,5 @@ labels:
   team: retro
   component: database
 annotations:
-  summary: Database High P95 Query Duration
+  summary: High P95 query duration for database
   description: Database P95 query duration exceeds 500ms indicating performance issues

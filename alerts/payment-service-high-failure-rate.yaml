@@ -4,7 +4,7 @@ for: 5m
 labels:
   severity: critical
   team: retro
-  component: api
+  component: worker
 annotations:
-  summary: Payment Service High Failure Rate
+  summary: High failure rate for payment service
   description: Payment processing failure rate above 10%, impacting revenue

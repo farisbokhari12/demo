@@ -6,5 +6,5 @@ labels:
   team: retro
   component: api
 annotations:
-  summary: API High Error Rate
+  summary: High error rate for API
   description: API error rate exceeds 5% indicating widespread service degradation

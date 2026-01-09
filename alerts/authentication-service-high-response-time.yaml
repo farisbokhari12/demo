@@ -6,6 +6,6 @@ labels:
   team: retro
   component: api
 annotations:
-  summary: Authentication Service High Response Time
+  summary: High response time for authentication service
   description: Authentication service response time exceeds 1 second for 3 consecutive
     minutes
