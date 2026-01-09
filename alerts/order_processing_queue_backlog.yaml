@@ -6,6 +6,6 @@ labels:
   team: retro
   component: queue
 annotations:
-  summary: Critical backlog in Order Processing Queue
+  summary: Critical Backlog in Order Processing Queue
   description: Order processing queue has critical backlog exceeding 5000 pending
     orders

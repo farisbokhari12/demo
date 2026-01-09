@@ -6,5 +6,5 @@ labels:
   team: retro
   component: database
 annotations:
-  summary: High CPU utilization for Database
+  summary: High CPU Utilization in Database
   description: Database CPU utilization critically high, may impact all services

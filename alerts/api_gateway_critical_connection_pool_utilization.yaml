@@ -6,5 +6,5 @@ labels:
   team: retro
   component: api
 annotations:
-  summary: Critical connection pool utilization for API Gateway
+  summary: Critical Connection Pool Utilization in API Gateway
   description: API Gateway connection pool nearly exhausted, immediate action required
