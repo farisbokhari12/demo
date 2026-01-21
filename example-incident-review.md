@@ -1,12 +1,14 @@
 # Incident Review: API Gateway Timeout Cascade Failure
 
 ## Incident Summary
+
 **Date**: 2025-12-28
 **Duration**: 3 hours 45 minutes
 **Severity**: Critical
 **Incident Commander**: Engineering Team Lead
 **Services Affected**: API Gateway, Authentication Service, Order Processing, Payment Service
 **Impact**:
+
 - 25,000+ failed API requests
 - Complete authentication service unavailability for 45 minutes
 - $50,000+ in lost revenue from failed transactions
@@ -27,9 +29,11 @@ The incident escalated when our monitoring systems failed to alert quickly enoug
 ## Root Cause Analysis
 
 ### Primary Cause
+
 A missing database index on the `auth_tokens.last_validated_at` column combined with a new token validation query introduced in deployment v2.14.5. The query performed a full table scan across 50M+ token records on every authentication request.
 
 ### Contributing Factors
+
 1. **Insufficient Pre-Production Testing**: The staging environment only contained 10,000 token records, which didn't expose the query performance issue
 2. **Missing Query Performance Alerts**: No alerts configured for slow database queries or authentication service latency
 3. **Connection Pool Misconfiguration**: API Gateway connection pool size (100 connections) was too small for production load
@@ -40,30 +44,31 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 
 ## Timeline
 
-| Time (UTC) | Event |
-|------------|-------|
-| **09:15** | Authentication service v2.14.5 deployed to production |
-| **09:20** | Database CPU usage begins climbing (40% → 75%) |
-| **09:25** | Authentication service response times increase to 3-5 seconds |
-| **09:30** | API Gateway connection pool utilization reaches 80% |
-| **09:35** | First customer complaints about slow login times |
-| **09:45** | API Gateway connection pool exhausted, 503 errors begin |
-| **09:50** | Order processing service starts queueing requests due to auth timeouts |
-| **09:55** | Payment service failures spike - transaction success rate drops to 15% |
-| **10:05** | On-call engineer paged for high error rate (30 min delay from initial degradation) |
-| **10:15** | Engineer identifies slow query in database logs |
-| **10:25** | Database team begins creating index on auth_tokens table |
-| **10:45** | Index creation completes, authentication latency drops to 100ms |
-| **11:00** | API Gateway connection pool recovers, error rate decreases |
-| **11:30** | All queued orders processed, payment processing normalized |
-| **12:00** | Incident declared resolved, post-mortem scheduled |
-| **13:00** | Post-incident review meeting conducted |
+| Time (UTC) | Event                                                                              |
+| ---------- | ---------------------------------------------------------------------------------- |
+| **09:15**  | Authentication service v2.14.5 deployed to production                              |
+| **09:20**  | Database CPU usage begins climbing (40% → 75%)                                     |
+| **09:25**  | Authentication service response times increase to 3-5 seconds                      |
+| **09:30**  | API Gateway connection pool utilization reaches 80%                                |
+| **09:35**  | First customer complaints about slow login times                                   |
+| **09:45**  | API Gateway connection pool exhausted, 503 errors begin                            |
+| **09:50**  | Order processing service starts queueing requests due to auth timeouts             |
+| **09:55**  | Payment service failures spike - transaction success rate drops to 15%             |
+| **10:05**  | On-call engineer paged for high error rate (30 min delay from initial degradation) |
+| **10:15**  | Engineer identifies slow query in database logs                                    |
+| **10:25**  | Database team begins creating index on auth_tokens table                           |
+| **10:45**  | Index creation completes, authentication latency drops to 100ms                    |
+| **11:00**  | API Gateway connection pool recovers, error rate decreases                         |
+| **11:30**  | All queued orders processed, payment processing normalized                         |
+| **12:00**  | Incident declared resolved, post-mortem scheduled                                  |
+| **13:00**  | Post-incident review meeting conducted                                             |
 
 ---
 
 ## Impact Metrics
 
 ### Technical Impact
+
 - **API Error Rate**: Spiked to 87% (normal: <0.1%)
 - **Authentication Service**: 100% timeout rate for 45 minutes
 - **Database CPU**: Peaked at 98% utilization
@@ -71,6 +76,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 - **Queue Backlog**: 35,000+ pending order processing jobs
 
 ### Business Impact
+
 - **Failed Transactions**: 12,500+ payment failures
 - **Lost Revenue**: Estimated $50,000 in abandoned carts
 - **Customer Support**: 500+ tickets created
@@ -82,6 +88,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 ## Alerts to Create
 
 ### Alert 1: Slow Authentication Service Response Time
+
 - **Alert Name**: auth-service-high-latency
 - **Type**: threshold
 - **Severity**: critical
@@ -96,6 +103,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
   - Email: engineering-oncall@company.com
 
 ### Alert 2: Database Query Performance Degradation
+
 - **Alert Name**: database-slow-query-critical
 - **Type**: threshold
 - **Severity**: critical
@@ -110,6 +118,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
   - Email: dba-team@company.com
 
 ### Alert 3: API Gateway Connection Pool High Utilization
+
 - **Alert Name**: api-gateway-connection-pool-high
 - **Type**: threshold
 - **Severity**: warning
@@ -123,6 +132,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
   - Email: platform-team@company.com
 
 ### Alert 4: API Gateway Connection Pool Exhausted
+
 - **Alert Name**: api-gateway-connection-pool-exhausted
 - **Type**: threshold
 - **Severity**: critical
@@ -137,6 +147,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
   - Email: engineering-oncall@company.com
 
 ### Alert 5: High API Error Rate
+
 - **Alert Name**: api-error-rate-critical
 - **Type**: threshold
 - **Severity**: critical
@@ -151,6 +162,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
   - Email: engineering-oncall@company.com
 
 ### Alert 6: Payment Processing Failure Rate
+
 - **Alert Name**: payment-processing-failure-high
 - **Type**: threshold
 - **Severity**: critical
@@ -165,6 +177,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
   - Email: payments-oncall@company.com
 
 ### Alert 7: Order Processing Queue Backlog Critical
+
 - **Alert Name**: order-queue-backlog-critical
 - **Type**: threshold
 - **Severity**: warning
@@ -179,6 +192,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
   - Ticket: create-ops-ticket
 
 ### Alert 8: Database CPU High Utilization
+
 - **Alert Name**: database-cpu-critical
 - **Type**: threshold
 - **Severity**: critical
@@ -197,6 +211,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 ## Action Items
 
 ### Immediate (Week 1)
+
 1. ✅ Rollback authentication service to v2.14.4
 2. ✅ Create index on `auth_tokens.last_validated_at` column
 3. ✅ Implement all 8 alerts listed above
@@ -205,6 +220,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 6. [ ] Review and optimize all authentication service database queries
 
 ### Short-term (Week 2-4)
+
 7. [ ] Implement query performance profiling in staging environment
 8. [ ] Add automated index recommendation system for production database
 9. [ ] Create runbook for connection pool exhaustion scenarios
@@ -213,6 +229,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 12. [ ] Configure circuit breaker patterns for all critical service dependencies
 
 ### Long-term (Month 2-3)
+
 13. [ ] Migrate authentication service to read replicas for validation queries
 14. [ ] Implement distributed tracing for end-to-end request monitoring
 15. [ ] Build automated load testing with production-scale data
@@ -225,6 +242,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 ## Lessons Learned
 
 ### What Went Well
+
 - ✅ Team responded quickly once paged
 - ✅ Database team efficiently created index under pressure
 - ✅ Clear communication in incident channel
@@ -232,6 +250,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 - ✅ No data loss or corruption occurred
 
 ### What Went Poorly
+
 - ❌ Staging environment didn't catch the performance regression
 - ❌ 30-minute delay before on-call engineer was paged
 - ❌ No circuit breaker prevented cascade failure
@@ -244,6 +263,7 @@ A missing database index on the `auth_tokens.last_validated_at` column combined 
 ## Sign-off
 
 **Reviewed By**:
+
 - Engineering Lead: [Name] - 2025-12-29
 - Database Team Lead: [Name] - 2025-12-29
 - Platform Team Lead: [Name] - 2025-12-29
