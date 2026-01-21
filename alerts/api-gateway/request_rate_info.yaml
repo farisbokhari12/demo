@@ -1,0 +1,10 @@
+alert: ApiGatewayRequestRateInfo
+expr: sum(rate(request_rate{service="api-gateway"}[5m])) > 1000
+for: 5m
+labels:
+  severity: info
+  team: retroshift
+  component: api
+annotations:
+  summary: Request rate anomaly
+  description: Detect request rate anomalies indicating traffic spikes

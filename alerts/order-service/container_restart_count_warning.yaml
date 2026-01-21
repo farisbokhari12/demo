@@ -1,0 +1,10 @@
+alert: OrderServiceContainerRestartCountWarning
+expr: increase(container_restart_count{service="order-service"}[5m]) > 5
+for: 5m
+labels:
+  severity: warning
+  team: retroshift
+  component: worker
+annotations:
+  summary: High container restart count
+  description: Detect when container restarts exceed normal levels
