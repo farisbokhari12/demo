@@ -1,0 +1,12 @@
+alert: OrderServiceContainerRestarts
+expr: |
+  increase(kube_pod_container_status_restarts_total{container="order-service"}[1h]) > 2
+for: 5m
+labels:
+  severity: warning
+  service: order-service
+  team: orders
+annotations:
+  summary: "Order service container restarting"
+  description: "{{ $value }} restarts in the last hour"
+  runbook: "https://wiki.internal/runbooks/order-service-restarts"

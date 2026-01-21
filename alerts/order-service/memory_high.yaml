@@ -1,0 +1,12 @@
+alert: OrderServiceMemoryHigh
+expr: |
+  (container_memory_usage_bytes{service="order-service"} / container_spec_memory_limit_bytes) * 100 > 80
+for: 5m
+labels:
+  severity: warning
+  service: order-service
+  team: orders
+annotations:
+  summary: "Order service memory above 80%"
+  description: "Memory utilization at {{ $value | printf \"%.1f\" }}%"
+  runbook: "https://wiki.internal/runbooks/order-service-memory"
