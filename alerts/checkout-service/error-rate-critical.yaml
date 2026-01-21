@@ -1,0 +1,11 @@
+alert: CheckoutServiceErrorRateCritical
+expr: (sum(rate(http_requests_total{service="checkout-service", status_code=~"5.."}[5m]))
+  / sum(rate(http_requests_total{service="checkout-service"}[5m]))) * 100 > 5
+for: 2m
+labels:
+  severity: critical
+  team: retroshift
+  component: api
+annotations:
+  summary: Error rate is critically high
+  description: Detect when error rate exceeds 5%

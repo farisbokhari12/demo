@@ -1,0 +1,36 @@
+groups:
+  - name: api-alerts
+    rules:
+      - alert: HighErrorRate
+        expr: |
+          sum(rate(http_requests_total{status_code=~"5.."}[5m])) by (service)
+          /
+          sum(rate(http_requests_total[5m])) by (service)
+          > 0.01
+        for: 3m
+        labels:
+          severity: warning
+          team: platform
+          component: api
+        annotations:
+          summary: "High error rate on {{ $labels.service }}"
+          description: "Service {{ $labels.service }} has error rate of {{ $value | humanizePercentage }}"
+          runbook_url: "https://runbooks.internal/api/high-error-rate"
+          dashboard_url: "https://grafana.internal/d/api-overview"
+
+      - alert: CriticalErrorRate
+        expr: |
+          sum(rate(http_requests_total{status_code=~"5.."}[5m])) by (service)
+          /
+          sum(rate(http_requests_total[5m])) by (service)
+          > 0.05
+        for: 2m
+        labels:
+          severity: critical
+          team: platform
+          component: api
+        annotations:
+          summary: "Critical error rate on {{ $labels.service }}"
+          description: "Service {{ $labels.service }} has error rate of {{ $value | humanizePercentage }} - immediate attention required"
+          runbook_url: "https://runbooks.internal/api/high-error-rate"
+          dashboard_url: "https://grafana.internal/d/api-overview"

@@ -1,0 +1,11 @@
+alert: CheckoutServiceErrorRateWarning
+expr: (sum(rate(http_requests_total{service="checkout-service", status_code=~"5.."}[5m]))
+  / sum(rate(http_requests_total{service="checkout-service"}[5m]))) * 100 > 1
+for: 3m
+labels:
+  severity: warning
+  team: retroshift
+  component: api
+annotations:
+  summary: Error rate is high
+  description: Detect when error rate exceeds 1%

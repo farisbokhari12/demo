@@ -1,0 +1,11 @@
+alert: CheckoutServiceOOMKillDetected
+expr: kube_pod_container_status_last_terminated_reason{reason="OOMKilled", container="checkout-service"}
+  > 0
+for: 0m
+labels:
+  severity: critical
+  team: retroshift
+  component: api
+annotations:
+  summary: OOMKill event detected
+  description: Detect OOMKill events

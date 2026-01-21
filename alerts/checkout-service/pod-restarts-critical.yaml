@@ -1,0 +1,11 @@
+alert: CheckoutServicePodRestartsCritical
+expr: increase(kube_pod_container_status_restarts_total{container="checkout-service"}[15m])
+  > 3
+for: 15m
+labels:
+  severity: critical
+  team: retroshift
+  component: api
+annotations:
+  summary: Pod restarts are high
+  description: Detect when pod restarts exceed 3 in 15 minutes

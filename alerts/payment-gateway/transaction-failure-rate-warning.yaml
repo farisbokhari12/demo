@@ -1,0 +1,11 @@
+alert: PaymentGatewayTransactionFailureRateWarning
+expr: (sum(rate(payment_transactions_total{status="failed"}[5m])) / sum(rate(payment_transactions_total[5m])))
+  * 100 > 2
+for: 3m
+labels:
+  severity: warning
+  team: retroshift
+  component: api
+annotations:
+  summary: Transaction failure rate is high
+  description: Detect when payment transaction failure rate exceeds 2%

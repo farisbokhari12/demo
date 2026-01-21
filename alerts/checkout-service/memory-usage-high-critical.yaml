@@ -1,0 +1,11 @@
+alert: CheckoutServiceMemoryUsageHighCritical
+expr: (container_memory_usage_bytes{container="checkout-service"} / container_spec_memory_limit_bytes{container="checkout-service"})
+  * 100 > 95
+for: 2m
+labels:
+  severity: critical
+  team: retroshift
+  component: api
+annotations:
+  summary: Memory usage is critically high
+  description: Detect when memory usage exceeds 95% of limit

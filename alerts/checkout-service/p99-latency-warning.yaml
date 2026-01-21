@@ -1,0 +1,11 @@
+alert: CheckoutServiceP99LatencyWarning
+expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{service="checkout-service",
+  endpoint="/api/checkout"}[5m])) > 2
+for: 5m
+labels:
+  severity: warning
+  team: retroshift
+  component: api
+annotations:
+  summary: P99 latency is high
+  description: Detect when p99 latency exceeds 2 seconds

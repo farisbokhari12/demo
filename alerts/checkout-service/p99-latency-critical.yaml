@@ -1,0 +1,11 @@
+alert: CheckoutServiceP99LatencyCritical
+expr: histogram_quantile(0.99, rate(http_request_duration_seconds_bucket{service="checkout-service",
+  endpoint="/api/checkout"}[5m])) > 5
+for: 2m
+labels:
+  severity: critical
+  team: retroshift
+  component: api
+annotations:
+  summary: P99 latency is critically high
+  description: Detect when p99 latency exceeds 5 seconds

@@ -1,0 +1,30 @@
+groups:
+  - name: disk-alerts
+    rules:
+      - alert: HighDiskUsage
+        expr: |
+          (node_filesystem_size_bytes - node_filesystem_avail_bytes) 
+          / node_filesystem_size_bytes > 0.8
+        for: 15m
+        labels:
+          severity: warning
+          team: sre
+          component: infrastructure
+        annotations:
+          summary: "High disk usage on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} on {{ $labels.instance }} at {{ $value | humanizePercentage }}"
+          runbook_url: "https://runbooks.internal/infra/high-disk"
+
+      - alert: CriticalDiskUsage
+        expr: |
+          (node_filesystem_size_bytes - node_filesystem_avail_bytes) 
+          / node_filesystem_size_bytes > 0.95
+        for: 5m
+        labels:
+          severity: critical
+          team: sre
+          component: infrastructure
+        annotations:
+          summary: "Critical disk usage on {{ $labels.instance }}"
+          description: "Disk {{ $labels.mountpoint }} on {{ $labels.instance }} at {{ $value | humanizePercentage }} - immediate action required"
+          runbook_url: "https://runbooks.internal/infra/high-disk"

@@ -1,0 +1,32 @@
+groups:
+  - name: api-latency-alerts
+    rules:
+      - alert: HighP99Latency
+        expr: |
+          histogram_quantile(0.99, 
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (service, le)
+          ) > 1
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+          component: api
+        annotations:
+          summary: "High p99 latency on {{ $labels.service }}"
+          description: "Service {{ $labels.service }} p99 latency is {{ $value | humanizeDuration }}"
+          runbook_url: "https://runbooks.internal/api/high-latency"
+
+      - alert: CriticalP99Latency
+        expr: |
+          histogram_quantile(0.99, 
+            sum(rate(http_request_duration_seconds_bucket[5m])) by (service, le)
+          ) > 3
+        for: 2m
+        labels:
+          severity: critical
+          team: platform
+          component: api
+        annotations:
+          summary: "Critical p99 latency on {{ $labels.service }}"
+          description: "Service {{ $labels.service }} p99 latency is {{ $value | humanizeDuration }}"
+          runbook_url: "https://runbooks.internal/api/high-latency"

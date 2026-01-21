@@ -1,0 +1,28 @@
+groups:
+  - name: memory-alerts
+    rules:
+      - alert: HighMemoryUsage
+        expr: |
+          container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          team: sre
+          component: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.pod }}"
+          description: "Pod {{ $labels.pod }} memory at {{ $value | humanizePercentage }}"
+          runbook_url: "https://runbooks.internal/infra/high-memory"
+
+      - alert: CriticalMemoryUsage
+        expr: |
+          container_memory_usage_bytes / container_spec_memory_limit_bytes > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          team: sre
+          component: infrastructure
+        annotations:
+          summary: "Critical memory usage on {{ $labels.pod }}"
+          description: "Pod {{ $labels.pod }} memory at {{ $value | humanizePercentage }} - OOMKill imminent"
+          runbook_url: "https://runbooks.internal/infra/high-memory"

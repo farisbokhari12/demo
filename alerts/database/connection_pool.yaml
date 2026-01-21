@@ -1,0 +1,28 @@
+groups:
+  - name: database-alerts
+    rules:
+      - alert: HighConnectionPoolUsage
+        expr: |
+          db_connection_pool_active / db_connection_pool_max > 0.8
+        for: 5m
+        labels:
+          severity: warning
+          team: platform
+          component: database
+        annotations:
+          summary: "High DB connection pool usage on {{ $labels.service }}"
+          description: "{{ $labels.service }} using {{ $value | humanizePercentage }} of connection pool"
+          runbook_url: "https://runbooks.internal/db/connection-pool"
+
+      - alert: ConnectionPoolExhausted
+        expr: |
+          db_connection_pool_active / db_connection_pool_max > 0.95
+        for: 2m
+        labels:
+          severity: critical
+          team: platform
+          component: database
+        annotations:
+          summary: "DB connection pool near exhaustion on {{ $labels.service }}"
+          description: "{{ $labels.service }} at {{ $value | humanizePercentage }} of connection pool - queries may fail"
+          runbook_url: "https://runbooks.internal/db/connection-pool"

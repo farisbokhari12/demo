@@ -1,0 +1,10 @@
+alert: CheckoutServicePromoCacheSizeWarning
+expr: checkout_promo_cache_size_bytes > 500000000
+for: 5m
+labels:
+  severity: warning
+  team: retroshift
+  component: cache
+annotations:
+  summary: Promo cache size is high
+  description: Detect when promo cache size exceeds 500MB

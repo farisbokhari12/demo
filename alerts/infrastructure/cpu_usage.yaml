@@ -1,0 +1,32 @@
+groups:
+  - name: cpu-alerts
+    rules:
+      - alert: HighCPUUsage
+        expr: |
+          rate(container_cpu_usage_seconds_total[5m]) 
+          / 
+          container_spec_cpu_quota * 100000 > 0.8
+        for: 10m
+        labels:
+          severity: warning
+          team: sre
+          component: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.pod }}"
+          description: "Pod {{ $labels.pod }} CPU at {{ $value | humanizePercentage }}"
+          runbook_url: "https://runbooks.internal/infra/high-cpu"
+
+      - alert: CriticalCPUUsage
+        expr: |
+          rate(container_cpu_usage_seconds_total[5m]) 
+          / 
+          container_spec_cpu_quota * 100000 > 0.95
+        for: 5m
+        labels:
+          severity: critical
+          team: sre
+          component: infrastructure
+        annotations:
+          summary: "Critical CPU usage on {{ $labels.pod }}"
+          description: "Pod {{ $labels.pod }} CPU at {{ $value | humanizePercentage }}"
+          runbook_url: "https://runbooks.internal/infra/high-cpu"
