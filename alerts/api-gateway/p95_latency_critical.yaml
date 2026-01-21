@@ -1,0 +1,11 @@
+alert: ApiGatewayP95LatencyCritical
+expr: histogram_quantile(0.95, sum(rate(p95_latency_bucket{service="api-gateway"}[5m]))
+  by (le)) > 500
+for: 5m
+labels:
+  severity: critical
+  team: retroshift
+  component: api
+annotations:
+  summary: High P95 latency
+  description: Detect when P95 latency exceeds acceptable thresholds
