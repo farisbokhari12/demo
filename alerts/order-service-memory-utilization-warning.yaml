@@ -1,0 +1,10 @@
+alert: OrderServiceMemoryUtilizationWarning
+expr: avg_over_time(memory_utilization{service="order-service"}[5m]) > 80
+for: 5m
+labels:
+  severity: warning
+  team: retroshfit
+  component: worker
+annotations:
+  summary: High memory utilization
+  description: Detect when memory utilization approaches 80% of limit

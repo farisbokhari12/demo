@@ -1,0 +1,10 @@
+alert: OrderServiceMemoryUtilizationTrendWarning
+expr: increase(memory_utilization_trend{service="order-service"}[1h]) > 500
+for: 1h
+labels:
+  severity: warning
+  team: retroshfit
+  component: worker
+annotations:
+  summary: Memory utilization growth rate detected
+  description: Detect memory utilization growth rate indicating a leak

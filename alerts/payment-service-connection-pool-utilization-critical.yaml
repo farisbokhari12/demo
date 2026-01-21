@@ -1,0 +1,11 @@
+alert: PaymentServiceConnectionPoolUtilizationCritical
+expr: avg_over_time(connection_pool_utilization{service="payment-service"}[5m]) >
+  90
+for: 5m
+labels:
+  severity: critical
+  team: retroshfit
+  component: database
+annotations:
+  summary: Critical connection pool utilization
+  description: Detect when database connection pool utilization exceeds 90%

@@ -1,0 +1,11 @@
+alert: PaymentServiceConnectionWaitTimeWarning
+expr: histogram_quantile(0.95, sum(rate(connection_wait_time_bucket{service="payment-service"}[5m]))
+  by (le)) > 100
+for: 5m
+labels:
+  severity: warning
+  team: retroshfit
+  component: database
+annotations:
+  summary: High connection wait time
+  description: Detect when requests queue for database connections

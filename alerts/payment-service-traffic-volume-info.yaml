@@ -1,0 +1,10 @@
+alert: PaymentServiceTrafficVolumeInfo
+expr: sum(rate(traffic_volume{service="payment-service"}[5m])) > 1000
+for: 5m
+labels:
+  severity: info
+  team: retroshfit
+  component: api
+annotations:
+  summary: Traffic volume spike detected
+  description: Detect sudden traffic volume spikes

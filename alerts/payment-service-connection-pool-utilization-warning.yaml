@@ -1,0 +1,11 @@
+alert: PaymentServiceConnectionPoolUtilizationWarning
+expr: avg_over_time(connection_pool_utilization{service="payment-service"}[5m]) >
+  75
+for: 5m
+labels:
+  severity: warning
+  team: retroshfit
+  component: database
+annotations:
+  summary: High connection pool utilization
+  description: Detect when database connection pool utilization exceeds 75%
